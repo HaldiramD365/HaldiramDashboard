@@ -1,0 +1,4 @@
+unixodbc
+unixodbc-dev
+freetds-dev
+tdsodbc
