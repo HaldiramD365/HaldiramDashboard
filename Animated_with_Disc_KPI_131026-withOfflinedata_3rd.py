@@ -356,7 +356,14 @@ def get_connection():
         st.error("Database credentials are not configured. Please configure via st.secrets or script variables.")
         st.stop()
 
-    available_drivers = pyodbc.drivers()
+    return pymssql.connect(
+        server=SERVER,
+        user=username,
+        password=password,
+        database=DATABASE,
+        port=1433,
+        as_dict=False
+    )
 
     # Automatically select the right driver for Windows or Linux
     if "ODBC Driver 18 for SQL Server" in available_drivers:
