@@ -1,5 +1,4 @@
-unixodbc
-unixodbc-dev
+build-essential
+freetds-dev
 freetds-bin
-freetds-common
-tdsodbc
+libssl-dev
