@@ -356,19 +356,32 @@ def get_connection():
         st.error("Database credentials are not configured. Please configure via st.secrets or script variables.")
         st.stop()
 
+    available_drivers = pyodbc.drivers()
+
+    # Automatically select the right driver for Windows or Linux
+    if "ODBC Driver 18 for SQL Server" in available_drivers:
+        driver = "ODBC Driver 18 for SQL Server"
+        extra_args = "Encrypt=yes;TrustServerCertificate=yes;"
+    elif "ODBC Driver 17 for SQL Server" in available_drivers:
+        driver = "ODBC Driver 17 for SQL Server"
+        extra_args = "Encrypt=yes;TrustServerCertificate=yes;"
+    elif "FreeTDS" in available_drivers:
+        driver = "FreeTDS"
+        extra_args = "Port=1433;TDS_Version=7.4;"
+    else:
+        driver = available_drivers[0] if available_drivers else "ODBC Driver 18 for SQL Server"
+        extra_args = "Port=1433;"
+
     connection_string = (
-        f"DRIVER={{{DRIVER}}};"
+        f"DRIVER={{{driver}}};"
         f"SERVER={SERVER};"
         f"DATABASE={DATABASE};"
         f"UID={username};"
         f"PWD={password};"
-        "Encrypt=yes;"
-        "TrustServerCertificate=yes;"
+        f"{extra_args}"
         "Connection Timeout=30;"
-        "MARS_Connection=yes;"
     )
     return pyodbc.connect(connection_string)
-
 
 # ============================================================
 # RBAC MODULE (LOCAL JSON-BASED ACCESS CONTROL WITH VERTICALS)
